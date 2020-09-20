@@ -4,7 +4,8 @@ The project began in August of 2020, when I was pretty inexperienced with databa
 multiple sprints. 
 
 ## Diagrams
-![Class diagram for the project](
+Class diagram for the project
+https://github.com/obrien2231/ProductionProject/blob/master/javaDiagram.pdf)
 
 ## Built with
 Used Intellij and SceneBuilder throughout the process

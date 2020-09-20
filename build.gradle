@@ -13,7 +13,7 @@ javafx {
 
 mainClassName = 'Main'
 
-group 'io.github.username'
+group 'io.github.obrien2231'
 version '1.0'
 
 repositories {

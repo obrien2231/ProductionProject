@@ -21,7 +21,6 @@
   This file is used to construct our User Interface
   Author Padraig O'Brien
   Since 2020-09-19
-
 -->
 
 <TabPane prefHeight="600.0" prefWidth="600.0" stylesheets="@demo.css" tabClosingPolicy="UNAVAILABLE"

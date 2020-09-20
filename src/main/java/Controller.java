@@ -116,7 +116,6 @@ public class Controller {
       preparedStatement.setString(1, columnZeroProductName.getText());
       preparedStatement.setString(2, columnZeroItemType.getSelectionModel()
           .getSelectedItem()); // used stack overflow to find correct way to String
-
       preparedStatement.setString(3, columnZeroProductManufacturer.getText());
 
       // adds new product into the database
@@ -125,7 +124,6 @@ public class Controller {
       preparedStatement.setString(1, columnOneProductName.getText());
       preparedStatement.setString(2,
           columnOneItemType.getSelectionModel().getSelectedItem()); // used stack overflow
-
       preparedStatement.setString(3, columnOneProductManufacturer.getText());
       // adds new product into the database
       preparedStatement.executeUpdate();

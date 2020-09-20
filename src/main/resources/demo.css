@@ -1,3 +1,9 @@
+/*
+ * This file is used to style the User interface
+ *
+ * @author Padraig O'Brien
+ * @since 2020-09-19
+ */
 .root {
   -fx-background-color: beige;
   -fx-font-size: 12pt;

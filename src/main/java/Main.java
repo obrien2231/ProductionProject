@@ -1,3 +1,10 @@
+/*
+ * This file is the main file for the program
+ *
+ * @author Padraig O'Brien
+ * @since 2020-09-19
+ */
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -5,8 +12,18 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+ * This class contains the main method for the program.
+ *
+ * @author Padraig O'Brien
+ */
 public class Main extends Application {
 
+  /**
+   * Main method is the main entrypoint for the application.
+   *
+   * @author Padraig O'Brien
+   */
   public static void main(String[] args) {
     launch(args);
   }

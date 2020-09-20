@@ -7,7 +7,6 @@
  * @since 2020-09-19
  */
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,7 +16,6 @@ import java.sql.Statement;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 /**
@@ -94,8 +92,8 @@ public class Controller {
     //  Database credentials
     final String USER = "";
     final String PASS = "";
-    Connection conn = null;
-    Statement stmt = null;
+    Connection conn;
+    Statement stmt;
 
     try {
       // STEP 1: Register JDBC driver
@@ -148,15 +146,8 @@ public class Controller {
       preparedStatement
           .close(); //closed prepared statement because it could cause problems in the future
 
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-
-    } catch (SQLException e) {
+    } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();
     }
-
-
   }
-
-
 }

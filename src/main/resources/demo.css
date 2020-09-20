@@ -4,7 +4,7 @@
  * @author Padraig O'Brien
  * @since 2020-09-19
  */
-.root {
+.root { /* intellij says this root is never used but it is being used for the GUI */
   -fx-background-color: beige;
   -fx-font-size: 12pt;
 }

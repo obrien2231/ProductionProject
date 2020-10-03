@@ -71,11 +71,13 @@ public class Controller {
     produceCmbQuantity.getSelectionModel().selectFirst(); // makes default in combo box 1
 
     // adds options into the choice boxes
-    columnZeroItemType.getItems().add("Audio");
-    columnZeroItemType.getItems().add("Video");
+    for (ItemType it : ItemType.values()) {
+      columnZeroItemType.getItems().add(it.code);
+    }
+    for (ItemType it : ItemType.values()) {
+      columnOneItemType.getItems().add(it.code);
+    }
 
-    columnOneItemType.getItems().add("Audio");
-    columnOneItemType.getItems().add("Video");
   }
 
   /**

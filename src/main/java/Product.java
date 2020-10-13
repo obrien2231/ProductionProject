@@ -1,10 +1,11 @@
 public abstract class Product implements Item {
 
   int id;
-  String type;
+  ItemType type;
   String manufacturer;
   String name;
 
+  static Product productLineCol[];
 
   public int getId() {
     return id;
@@ -26,7 +27,7 @@ public abstract class Product implements Item {
     this.manufacturer = manufacturer;
   }
 
-  public Product( String name, String manufacturer, String type) {
+  public Product( String name, String manufacturer, ItemType type) {
     this.name = name;
     this.manufacturer = manufacturer;
     this.type = type;
@@ -34,12 +35,14 @@ public abstract class Product implements Item {
 
   public String toString() {
     return "Name: " + name + "\n" + "Manufacturer: " + manufacturer + "\n" + "Type: "
-        + type;
+        + type.code;
   }
 }
 class Widget extends Product{
 
-  public Widget(String name, String manufacturer, String type) {
-    super(name, manufacturer, type);
+  public Widget(String name, String manufacturer, ItemType type) {
+    super(name, manufacturer,type);
+
+
   }
 }

@@ -113,6 +113,7 @@ public class Controller {
       String addProduct = "Insert INTO PRODUCT set name=? , type=? ,"
           + " manufacturer=?";
 
+
       PreparedStatement preparedStatement = conn.prepareStatement(addProduct);
 
       preparedStatement.setString(1, columnZeroProductName.getText());
@@ -139,6 +140,25 @@ public class Controller {
             2));
         // adjusted column order above so product would print in console type, manufacturer, name
       }
+
+
+      Product product1 = new Widget("iPod", "Apple", ItemType.AUDIO);
+      System.out.println(product1.toString());
+
+
+      String addWidget = "Insert INTO PRODUCT set name=? , type=? ,"
+          + " manufacturer=?";
+
+
+
+      preparedStatement = conn.prepareStatement(addWidget);
+
+      preparedStatement.setString(1, product1.getName());
+      preparedStatement.setString(2, ItemType.AUDIO.code);
+      preparedStatement.setString(3, product1.getManufacturer());
+
+      preparedStatement.executeUpdate();
+
 
       // STEP 4: Clean-up environment
       stmt.close();

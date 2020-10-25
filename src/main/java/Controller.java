@@ -6,16 +6,18 @@
  * @author Padraig O'Brien
  * @since 2020-09-19
  */
-
+import java.util.Date;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 /**
@@ -26,19 +28,10 @@ import javafx.scene.control.TextField;
 public class Controller {
 
   @FXML
-  private TextField columnZeroProductName;
-
-  @FXML
   private TextField columnOneProductName;
 
   @FXML
-  private TextField columnZeroProductManufacturer;
-
-  @FXML
   private TextField columnOneProductManufacturer;
-
-  @FXML
-  private ChoiceBox<String> columnZeroItemType;
 
   @FXML
   private ChoiceBox<String> columnOneItemType;
@@ -47,9 +40,16 @@ public class Controller {
   private ComboBox<String> produceCmbQuantity;
 
   @FXML
+  private TextArea productionRecord;
+
+  @FXML
   public void addProduct() {
     connectToDb();
     System.out.println("Product Added!");
+  }
+
+  public void showProduction(ProductionRecord prItem){
+    productionRecord.appendText(prItem.toString());
   }
 
   @FXML
@@ -64,6 +64,9 @@ public class Controller {
    * @author Padraig O'Brien
    */
   public void initialize() {
+
+    productionRecord.setEditable(false);
+
     for (int count = 1; count <= 10; count++) {
       produceCmbQuantity.getItems().add(String.valueOf(count));
     }
@@ -71,9 +74,6 @@ public class Controller {
     produceCmbQuantity.getSelectionModel().selectFirst(); // makes default in combo box 1
 
     // adds options into the choice boxes
-    for (ItemType it : ItemType.values()) {
-      columnZeroItemType.getItems().add(it.code);
-    }
     for (ItemType it : ItemType.values()) {
       columnOneItemType.getItems().add(it.code);
     }
@@ -116,14 +116,6 @@ public class Controller {
 
       PreparedStatement preparedStatement = conn.prepareStatement(addProduct);
 
-      preparedStatement.setString(1, columnZeroProductName.getText());
-      preparedStatement.setString(2, columnZeroItemType.getSelectionModel()
-          .getSelectedItem()); // used stack overflow to find correct way to String
-      preparedStatement.setString(3, columnZeroProductManufacturer.getText());
-
-      // adds new product into the database
-      preparedStatement.executeUpdate();
-
       preparedStatement.setString(1, columnOneProductName.getText());
       preparedStatement.setString(2,
           columnOneItemType.getSelectionModel().getSelectedItem()); // used stack overflow
@@ -158,6 +150,34 @@ public class Controller {
       preparedStatement.setString(3, product1.getManufacturer());
 
       preparedStatement.executeUpdate();
+
+      // test constructor used when creating production records from user interface
+      Integer numProduced = 3;  // this will come from the combobox in the UI
+
+      for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
+        ProductionRecord pr = new ProductionRecord(0);
+        System.out.println(pr.toString());
+      }
+
+      // test constructor used when creating production records from reading database
+      ProductionRecord pr = new ProductionRecord(0, 3, "1", new Date());
+      System.out.println(pr.toString());
+      showProduction(pr);
+
+      // testing accessors and mutators
+      pr.setProductionNum(1);
+      System.out.println(pr.getProductionNum());
+
+      pr.setProductID(4);
+      System.out.println(pr.getProductID());
+
+      pr.setSerialNum("2");
+      System.out.println(pr.getSerialNum());
+
+      pr.setProdDate(new Date());
+      System.out.println(pr.getProdDate());
+
+
 
 
       // STEP 4: Clean-up environment

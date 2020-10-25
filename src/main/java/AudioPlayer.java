@@ -1,4 +1,4 @@
-public class AudioPlayer extends Product implements  MultiMediaControl {
+public class AudioPlayer extends Product implements  MultimediaControl {
 
   String supportedAudioFormats;
   String supportedPlaylistFormats;
@@ -26,9 +26,7 @@ public class AudioPlayer extends Product implements  MultiMediaControl {
     System.out.println("Next");
   }
   public String toString() {
-    return "Name: " + name + "\n" +
-           "Manufacturer: " + manufacturer + "\n" +
-           "Type: " + type + "\n" +
+    return super.toString() +
            "Supported Audio Formats: " + supportedAudioFormats + "\n" +
            "Supported Playlist Formats: " + supportedPlaylistFormats;
   }

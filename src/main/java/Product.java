@@ -5,7 +5,6 @@ public abstract class Product implements Item {
   String manufacturer;
   String name;
 
-  static Product productLineCol[];
 
   public int getId() {
     return id;
@@ -35,7 +34,7 @@ public abstract class Product implements Item {
 
   public String toString() {
     return "Name: " + name + "\n" + "Manufacturer: " + manufacturer + "\n" + "Type: "
-        + type.code;
+        + type + "\n";
   }
 }
 class Widget extends Product{

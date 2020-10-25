@@ -10,5 +10,4 @@ public interface Item {
 
   public String getManufacturer();
 
-
 }

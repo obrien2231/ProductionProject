@@ -26,9 +26,18 @@ public abstract class Product implements Item {
     this.manufacturer = manufacturer;
   }
 
+
   public Product( String name, String manufacturer, ItemType type) {
     this.name = name;
     this.manufacturer = manufacturer;
+    this.type = type;
+  }
+
+  public ItemType getType() {
+    return type;
+  }
+
+  public void setType(ItemType type) {
     this.type = type;
   }
 
@@ -39,9 +48,9 @@ public abstract class Product implements Item {
 }
 class Widget extends Product{
 
-  public Widget(String name, String manufacturer, ItemType type) {
+  public Widget(int id,String name, String manufacturer, ItemType type) {
     super(name, manufacturer,type);
-
+    this.id = id;
 
   }
 }

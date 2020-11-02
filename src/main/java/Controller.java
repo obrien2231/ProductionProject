@@ -6,6 +6,7 @@
  * @author Padraig O'Brien
  * @since 2020-09-19
  */
+import java.time.Instant;
 import java.util.Date;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,11 +15,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
+import java.util.Date;
+import java.sql.Timestamp;
+
+
 
 /**
  * The controller for the program, it is used to control the user interface Combines the components
@@ -26,6 +47,8 @@ import javafx.scene.control.TextField;
  * and put new data into the database
  */
 public class Controller {
+
+  ObservableList<Product> productLine = FXCollections.observableArrayList();
 
   @FXML
   private TextField columnOneProductName;
@@ -37,25 +60,50 @@ public class Controller {
   private ChoiceBox<String> columnOneItemType;
 
   @FXML
+  private TableView<Product> productLineTable;
+
+  @FXML
+  private TableColumn<?, ?> productLineTableCol1;
+
+  @FXML
+  private TableColumn<?, ?> productLineTableCol2;
+
+  @FXML
+  private TableColumn<?, ?> productLineTableCol3;
+
+  @FXML
+  private TableColumn<?,?> productLineTableCol4;
+
+  @FXML
+  private ListView<Product> produceTabListView;
+
+  @FXML
   private ComboBox<String> produceCmbQuantity;
 
   @FXML
   private TextArea productionRecord;
 
+
   @FXML
   public void addProduct() {
     connectToDb();
+    try {
+      loadProductList();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
     System.out.println("Product Added!");
   }
 
-  public void showProduction(ProductionRecord prItem){
+  public void showProduction(ProductionRecord prItem) {
     productionRecord.appendText(prItem.toString());
   }
 
   @FXML
-  public void recordProduction() {
+  public void recordProduction() throws SQLException {
     System.out.println("Recording has Started!");
   }
+
 
   /**
    * This method runs right away any time the application is run. It is currently being usd to
@@ -63,7 +111,21 @@ public class Controller {
    *
    * @author Padraig O'Brien
    */
-  public void initialize() {
+  public void initialize() throws SQLException {
+
+    productLineTableCol1.setCellValueFactory(new PropertyValueFactory<>("id"));
+    productLineTableCol2.setCellValueFactory(new PropertyValueFactory<>("name"));
+    productLineTableCol3.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
+    productLineTableCol4.setCellValueFactory(new PropertyValueFactory<>("type"));
+    productLineTable.setItems(productLine);
+
+    produceTabListView.setItems(productLine);
+
+/*    try {
+      loadProductList();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }*/
 
     productionRecord.setEditable(false);
 
@@ -77,6 +139,7 @@ public class Controller {
     for (ItemType it : ItemType.values()) {
       columnOneItemType.getItems().add(it.code);
     }
+
 
   }
 
@@ -113,7 +176,6 @@ public class Controller {
       String addProduct = "Insert INTO PRODUCT set name=? , type=? ,"
           + " manufacturer=?";
 
-
       PreparedStatement preparedStatement = conn.prepareStatement(addProduct);
 
       preparedStatement.setString(1, columnOneProductName.getText());
@@ -134,27 +196,12 @@ public class Controller {
       }
 
 
-      Product product1 = new Widget("iPod", "Apple", ItemType.AUDIO);
-      System.out.println(product1.toString());
-
-
-      String addWidget = "Insert INTO PRODUCT set name=? , type=? ,"
-          + " manufacturer=?";
-
-
-
-      preparedStatement = conn.prepareStatement(addWidget);
-
-      preparedStatement.setString(1, product1.getName());
-      preparedStatement.setString(2, ItemType.AUDIO.code);
-      preparedStatement.setString(3, product1.getManufacturer());
-
-      preparedStatement.executeUpdate();
 
       // test constructor used when creating production records from user interface
       Integer numProduced = 3;  // this will come from the combobox in the UI
 
-      for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
+      for (int productionRunProduct = 0; productionRunProduct < numProduced;
+          productionRunProduct++) {
         ProductionRecord pr = new ProductionRecord(0);
         System.out.println(pr.toString());
       }
@@ -177,14 +224,91 @@ public class Controller {
       pr.setProdDate(new Date());
       System.out.println(pr.getProdDate());
 
-
-
-
       // STEP 4: Clean-up environment
       stmt.close();
       conn.close();
       preparedStatement
           .close(); //closed prepared statement because it could cause problems in the future
+
+    } catch (ClassNotFoundException | SQLException e) {
+      e.printStackTrace();
+    }
+
+  }
+  private void loadProductList() throws SQLException {
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/PD";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = "";
+    Connection conn;
+    Statement stmt;
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER,
+          PASS); // spot bugs flags this for no password, will receive password later
+
+      //STEP 3: Execute a query
+      stmt = conn.createStatement();
+      // spot bugs flags this however it is a false positive, statement is closed in step 4
+
+
+      String sql = "SELECT * FROM PRODUCT";
+
+      ResultSet rs = stmt.executeQuery(sql);
+
+      while (rs.next()) {
+
+        // these lines correspond to the database table columns
+
+        int id = rs.getInt(1);
+
+        String name = rs.getString(2);
+
+        String manufacturer = rs.getString(4);
+
+        String type = rs.getString(3);
+
+
+        // create object
+        switch (type) {
+          case "AU":
+            Product product1 = new Widget(id, name,
+                manufacturer, ItemType.AUDIO);
+            System.out.println(product1);
+            productLine.add(product1);
+            break;
+          case "VI":
+            Product product2 = new Widget(id, name,
+                manufacturer, ItemType.VISUAL);
+            System.out.println(product2);
+            productLine.add(product2);
+            break;
+          case "AM":
+            Product product3 = new Widget(id, name,
+                manufacturer, ItemType.AUDIO_MOBILE);
+            System.out.println(product3);
+            productLine.add(product3);
+            break;
+          case "VM":
+            Product product4 = new Widget(id, name,
+                manufacturer, ItemType.VISUAL_MOBILE);
+            System.out.println(product4);
+            productLine.add(product4);
+            break;
+        }
+
+        // save to observable list
+
+      }
+      // STEP 4: Clean-up environment
+      stmt.close();
+      conn.close();
 
     } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();

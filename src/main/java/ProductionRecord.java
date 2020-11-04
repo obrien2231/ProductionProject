@@ -1,3 +1,5 @@
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 public class ProductionRecord {
   int productionNumber;
@@ -18,6 +20,14 @@ public class ProductionRecord {
     ProductID = productID;
     this.serialNumber = serialNumber;
     this.dateProduced = dateProduced;
+  }
+
+  public ProductionRecord(Product pr, int count){
+    this.productionNumber = pr.getId();
+    this.serialNumber = pr.getManufacturer().substring(0,3) +
+        pr.getType().code + String.format("%05d",count);
+    this.dateProduced = Timestamp.from(Instant.now());
+
   }
 
   public int getProductionNum() {
@@ -58,11 +68,7 @@ public class ProductionRecord {
         "Prod. Num: " + productionNumber +
         " Product ID: " + ProductID +
         " Serial Num: " + serialNumber +
-        " Date: " + dateProduced;
-  }
-
-  public void showProduction(){
-
+        " Date: " + dateProduced + "\n";
   }
 
 }

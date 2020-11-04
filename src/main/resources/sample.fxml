@@ -45,10 +45,10 @@
       <Button layoutX="86.0" layoutY="64.0" mnemonicParsing="false" onAction="#addProduct" text="Add Product" />
       <TableView fx:id="productLineTable" layoutX="42.0" layoutY="255.0" prefHeight="288.0" prefWidth="530.0">
         <columns>
-          <TableColumn fx:id="productLineTableCol1" prefWidth="79.0" text="C1" />
-          <TableColumn fx:id="productLineTableCol2" minWidth="0.0" prefWidth="183.0" text="C2" />
-               <TableColumn fx:id="productLineTableCol3" prefWidth="142.0" text="C3" />
-               <TableColumn fx:id="productLineTableCol4" prefWidth="125.0" text="C4" />
+          <TableColumn fx:id="productLineTableCol1" prefWidth="79.0" text="Product ID" />
+          <TableColumn fx:id="productLineTableCol2" minWidth="0.0" prefWidth="183.0" text="Name" />
+               <TableColumn fx:id="productLineTableCol3" prefWidth="142.0" text="Manufacturer" />
+               <TableColumn fx:id="productLineTableCol4" prefWidth="125.0" text="Type" />
         </columns>
       </TableView>
       <Label layoutX="272.0" layoutY="214.0" text="Existing Products" />

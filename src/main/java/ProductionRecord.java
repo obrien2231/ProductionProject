@@ -23,7 +23,7 @@ public class ProductionRecord {
   }
 
   public ProductionRecord(Product pr, int count){
-    this.productionNumber = pr.getId();
+    this.ProductID = pr.getId();
     this.serialNumber = pr.getManufacturer().substring(0,3) +
         pr.getType().code + String.format("%05d",count);
     this.dateProduced = Timestamp.from(Instant.now());

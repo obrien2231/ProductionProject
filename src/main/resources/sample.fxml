@@ -43,10 +43,10 @@
         <ChoiceBox fx:id="columnOneItemType" prefHeight="35.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
       </GridPane>
       <Button layoutX="86.0" layoutY="64.0" mnemonicParsing="false" onAction="#addProduct" text="Add Product" />
-      <TableView fx:id="productLineTable" layoutX="42.0" layoutY="255.0" prefHeight="288.0" prefWidth="530.0">
+      <TableView fx:id="productLineTable" layoutX="13.0" layoutY="243.0" prefHeight="300.0" prefWidth="559.0">
         <columns>
-          <TableColumn fx:id="productLineTableCol1" prefWidth="79.0" text="Product ID" />
-          <TableColumn fx:id="productLineTableCol2" minWidth="0.0" prefWidth="183.0" text="Name" />
+          <TableColumn fx:id="productLineTableCol1" prefWidth="99.0" text="Product ID" />
+          <TableColumn fx:id="productLineTableCol2" minWidth="0.0" prefWidth="163.0" text="Name" />
                <TableColumn fx:id="productLineTableCol3" prefWidth="142.0" text="Manufacturer" />
                <TableColumn fx:id="productLineTableCol4" prefWidth="125.0" text="Type" />
         </columns>
@@ -56,7 +56,7 @@
   </Tab>
   <Tab text="Produce">
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-      <ListView fx:id="produceTabListView" layoutX="27.0" layoutY="180.0" prefHeight="200.0" prefWidth="200.0" />
+      <ListView fx:id="produceTabListView" layoutX="27.0" layoutY="180.0" prefHeight="277.0" prefWidth="273.0" />
       <ComboBox fx:id="produceCmbQuantity" layoutX="378.0" layoutY="255.0" prefWidth="150.0" />
       <Label layoutX="71.0" layoutY="149.0" text="Choose Product" />
       <Label layoutX="395.0" layoutY="180.0" text="Choose quantity" />
@@ -65,7 +65,7 @@
   </Tab>
   <Tab text="Production Log">
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="340.0">
-      <TextArea fx:id="productionRecord" layoutX="100.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" />
+      <TextArea fx:id="productionRecord" layoutX="14.0" layoutY="25.0" prefHeight="471.0" prefWidth="570.0" />
     </AnchorPane>
   </Tab>
 </TabPane>

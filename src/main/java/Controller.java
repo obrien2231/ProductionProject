@@ -6,6 +6,7 @@
  * @author Padraig O'Brien
  * @since 2020-09-19
  */
+
 import java.time.Instant;
 import java.util.Date;
 import java.sql.Connection;
@@ -40,7 +41,6 @@ import java.util.Date;
 import java.sql.Timestamp;
 
 
-
 /**
  * The controller for the program, it is used to control the user interface Combines the components
  * created in the sample.fxml file together Also is used as a way to grab data from the database,
@@ -51,7 +51,6 @@ public class Controller {
   ObservableList<Product> productLine = FXCollections.observableArrayList();
   ArrayList<ProductionRecord> productionLog = new ArrayList<ProductionRecord>();
   ArrayList<ItemType> itemTypesCount = new ArrayList<ItemType>();
-
 
 
   @FXML
@@ -76,7 +75,7 @@ public class Controller {
   private TableColumn<?, ?> productLineTableCol3;
 
   @FXML
-  private TableColumn<?,?> productLineTableCol4;
+  private TableColumn<?, ?> productLineTableCol4;
 
   @FXML
   private ListView<Product> produceTabListView;
@@ -89,7 +88,7 @@ public class Controller {
 
 
   @FXML
-  public void addProduct(){
+  public void addProduct() {
     connectToDb();
     productLineTable.getItems().clear();
     try {
@@ -108,42 +107,46 @@ public class Controller {
     System.out.println(quantityCount);
     ArrayList<ProductionRecord> productionRun = new ArrayList<ProductionRecord>();
     int itemCount = 0;
-      if (pr.getType() == ItemType.AUDIO){
-        itemTypesCount.add(ItemType.AUDIO);
-      }
-      if (pr.getType() == ItemType.AUDIO_MOBILE){
-        itemTypesCount.add(ItemType.AUDIO_MOBILE);
-      }
-      if (pr.getType() == ItemType.VISUAL){
-        itemTypesCount.add(ItemType.VISUAL);
-      }
-      if (pr.getType() == ItemType.VISUAL_MOBILE){
-        itemTypesCount.add(ItemType.VISUAL_MOBILE);
-      }
+    if (pr.getType() == ItemType.AUDIO) {
+      itemTypesCount.add(ItemType.AUDIO);
+    }
+    if (pr.getType() == ItemType.AUDIO_MOBILE) {
+      itemTypesCount.add(ItemType.AUDIO_MOBILE);
+    }
+    if (pr.getType() == ItemType.VISUAL) {
+      itemTypesCount.add(ItemType.VISUAL);
+    }
+    if (pr.getType() == ItemType.VISUAL_MOBILE) {
+      itemTypesCount.add(ItemType.VISUAL_MOBILE);
+    }
 
-    for(int i = 0; i<quantityCount;i++){
-      for(int j = 0;i < itemTypesCount.size(); i++){
-        if(pr.getType() == ItemType.AUDIO){
-          if(itemTypesCount.get(j) == ItemType.AUDIO){
+    for (int i = 0; i < quantityCount; i++) {
+      itemCount = i;
+      for (int j = 0; j < itemTypesCount.size(); j++) {
+        if (pr.getType() == ItemType.AUDIO) {
+          if (itemTypesCount.get(j) == ItemType.AUDIO) {
             itemCount++;
-            }
+          }
         }
-        if(pr.getType() == ItemType.VISUAL){
-        if(itemTypesCount.get(j) == ItemType.VISUAL){
-          itemCount++;
-        }}
-        if(pr.getType() == ItemType.AUDIO_MOBILE){
-        if(itemTypesCount.get(j) == ItemType.AUDIO_MOBILE){
-          itemCount++;
-        }}
-        if(pr.getType() == ItemType.VISUAL_MOBILE){
-        if(itemTypesCount.get(j) == ItemType.VISUAL_MOBILE){
-          itemCount++;
-        }}}
-        ProductionRecord pr1 = new ProductionRecord(pr,itemCount);
-        productionRun.add(pr1);
+        if (pr.getType() == ItemType.VISUAL) {
+          if (itemTypesCount.get(j) == ItemType.VISUAL) {
+            itemCount++;
+          }
+        }
+        if (pr.getType() == ItemType.AUDIO_MOBILE) {
+          if (itemTypesCount.get(j) == ItemType.AUDIO_MOBILE) {
+            itemCount++;
+          }
+        }
+        if (pr.getType() == ItemType.VISUAL_MOBILE) {
+          if (itemTypesCount.get(j) == ItemType.VISUAL_MOBILE) {
+            itemCount++;
+          }
+        }
       }
-
+      ProductionRecord pr1 = new ProductionRecord(pr, itemCount);
+      productionRun.add(pr1);
+    }
 
     addToProductionDB(productionRun);
     System.out.println("Recording has Started!");
@@ -158,7 +161,7 @@ public class Controller {
    *
    * @author Padraig O'Brien
    */
-  public void initialize(){
+  public void initialize() {
 
     productLineTableCol1.setCellValueFactory(new PropertyValueFactory<>("id"));
     productLineTableCol2.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -259,7 +262,8 @@ public class Controller {
     }
 
   }
-  private void loadProductList() throws SQLException{
+
+  private void loadProductList() throws SQLException {
     final String JDBC_DRIVER = "org.h2.Driver";
     final String DB_URL = "jdbc:h2:./res/PD";
 
@@ -268,7 +272,6 @@ public class Controller {
     final String PASS = "";
     Connection conn;
     Statement stmt;
-
 
     try {
       // STEP 1: Register JDBC driver
@@ -281,7 +284,6 @@ public class Controller {
       //STEP 3: Execute a query
       stmt = conn.createStatement();
       // spot bugs flags this however it is a false positive, statement is closed in step 4
-
 
       String sql = "SELECT * FROM PRODUCT";
 
@@ -298,7 +300,6 @@ public class Controller {
         String manufacturer = rs.getString(4);
 
         String type = rs.getString(3);
-
 
         // create object
         switch (type) {
@@ -338,7 +339,8 @@ public class Controller {
       e.printStackTrace();
     }
   }
-  private void loadProductionLog() throws SQLException{
+
+  private void loadProductionLog() throws SQLException {
     final String JDBC_DRIVER = "org.h2.Driver";
     final String DB_URL = "jdbc:h2:./res/PD";
 
@@ -347,7 +349,6 @@ public class Controller {
     final String PASS = "";
     Connection conn;
     Statement stmt;
-
 
     try {
       // STEP 1: Register JDBC driver
@@ -360,7 +361,6 @@ public class Controller {
       //STEP 3: Execute a query
       stmt = conn.createStatement();
       // spot bugs flags this however it is a false positive, statement is closed in step 4
-
 
       String sql = "SELECT * FROM PRODUCTIONRECORD";
 
@@ -378,13 +378,13 @@ public class Controller {
 
         Date dateProduced = rs.getDate(4);
 
-        ProductionRecord pr = new ProductionRecord(productionNum,prodID,serialNum,dateProduced);
+        ProductionRecord pr = new ProductionRecord(productionNum, prodID, serialNum, dateProduced);
         productionLog.add(pr);
-        }
+      }
 
       showProduction(productionLog);
 
-        // save to observable list
+      // save to observable list
       // STEP 4: Clean-up environment
       stmt.close();
       conn.close();
@@ -393,13 +393,15 @@ public class Controller {
       e.printStackTrace();
     }
   }
+
   public void showProduction(ArrayList<ProductionRecord> productionLog) {
     productionRecord.clear();
     for (ProductionRecord pr1 : productionLog) {
       productionRecord.appendText(pr1.toString());
     }
   }
-  public void addToProductionDB(ArrayList<ProductionRecord> productionRun){
+
+  public void addToProductionDB(ArrayList<ProductionRecord> productionRun) {
     final String JDBC_DRIVER = "org.h2.Driver";
     final String DB_URL = "jdbc:h2:./res/PD";
 
@@ -422,7 +424,7 @@ public class Controller {
       // spot bugs flags this however it is a false positive, statement is closed in step 4
 
       // used the jdbc prepared statement tutorial off of tutorials.jenkov.com for section below
-      for(int i = 0; i<productionRun.size();i++) {
+      for (int i = 0; i < productionRun.size(); i++) {
         String addProductionRecord =
             "Insert INTO PRODUCTIONRECORD set product_id=? ,"
                 + " serial_num=? , date_produced=?";
@@ -438,9 +440,6 @@ public class Controller {
         // adds new product into the database
         preparedStatement.executeUpdate();
       }
-
-
-
 
       // STEP 4: Clean-up environment
       stmt.close();

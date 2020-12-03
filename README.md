@@ -28,6 +28,7 @@ Scenebuilder was also used when developing the Graphical User Interface <br/>
 Padraig O'Brien
 
 ## License
+[License](License.txt)
 
 ## Acknowledgments
 Throughout the process StackOverflow, w3 schools, jenkov, and oracle were all websites used <br/>

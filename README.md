@@ -9,7 +9,7 @@ multiple sprints.
 [JavaDoc](docs/index.html)
 ## Diagrams
 Class diagram for the project <br>
- ![Class Diagram](javaDiagram.pdf) <br>
+ ![Class Diagram](Top-Level Package.png) <br>
 Database Diagram <br>
 ![Database Diagram](PD.png)<br>
 

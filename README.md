@@ -6,10 +6,12 @@ multiple sprints.
 ## Demonstration
 
 ## Documentation
-
+[JavaDoc](docs/index.html)
 ## Diagrams
-Class diagram for the project
-https://github.com/obrien2231/ProductionProject/blob/master/javaDiagram.pdf)
+Class diagram for the project <br>
+ ![Class Diagram](javaDiagram.pdf) <br>
+Database Diagram
+![Database Diagram](PD.png)<br>
 
 ## Getting Started
 

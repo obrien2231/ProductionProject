@@ -2,6 +2,8 @@
 This is a semester long project for the fall of 2020, and it is a production line tracker. I am working independently on this project throughout the course of this semester. 
 The project began in August 2020, when I was pretty inexperienced with databases and object oriented programming. As my skill grows the project will be enhanced through
 multiple sprints. 
+<br>
+It is now finished in December in 2020, and I am much more proficient in Object Oriented Programming. I enjoyed the project because it was a project that allowed freedom throughout the implementation process. Which allowed me to refine my critical thinking skills, and work on good programming habits.
 
 ## Demonstration
 

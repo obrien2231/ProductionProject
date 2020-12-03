@@ -38,7 +38,7 @@ Professor Vanselow and Teaching assistant Jeremy Martin were invaluable with the
 ## History
 
 ## Key Programming Concepts Utilized
-Classes - The ability to design and implement classes using object oriented methods.
-Inheritance - Demonstrates the understanding of the hierarchy systems of class structure. Which allows subclasses to inherit properties from the superclass.
-Polymorphism - Allows us to treat inherited methods in different ways, allowing programmers to be flexible in the implementation of the inherited properties.
-Encapsulation - Using data-hiding and abstration encapsulation allowing us to access data from a class, without exposing the code or implementation inside of the class.
+Classes - The ability to design and implement classes using object oriented methods.<br>
+Inheritance - Demonstrates the understanding of the hierarchy systems of class structure. Which allows subclasses to inherit properties from the superclass.<br>
+Polymorphism - Allows us to treat inherited methods in different ways, allowing programmers to be flexible in the implementation of the inherited properties.<br>
+Encapsulation - Using data-hiding and abstration encapsulation allowing us to access data from a class, without exposing the code or implementation inside of the class.<br>

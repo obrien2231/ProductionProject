@@ -10,7 +10,7 @@ multiple sprints.
 ## Diagrams
 Class diagram for the project <br>
  ![Class Diagram](javaDiagram.pdf) <br>
-Database Diagram
+Database Diagram <br>
 ![Database Diagram](PD.png)<br>
 
 ## Getting Started

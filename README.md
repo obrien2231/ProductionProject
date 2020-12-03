@@ -16,7 +16,8 @@ Database Diagram <br>
 ![Database Diagram](PD.png)<br>
 
 ## Getting Started
-
+Download the zip file, then unzip the folder. Open the unzipped folder in an IDE of your choice but the following instructions will be for Intellij.
+After opening the unzipped file in Intellij, Run -> Edit Configurations -> VM configurations -> paste the text below replacing the PathToYourJavaFXSDK with the path to your JavaFX SDK
 ## Built with
 Built in Intellij <br/>
 Scenebuilder was also used when developing the Graphical User Interface <br/>

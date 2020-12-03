@@ -7,50 +7,48 @@
  * @since 2020-09-19
  */
 
-import java.time.Instant;
-import java.util.Date;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
-import java.util.Date;
-import java.sql.Timestamp;
 
 
 /**
- * The controller for the program, it is used to control the user interface Combines the components
- * created in the sample.fxml file together Also is used as a way to grab data from the database,
- * and put new data into the database
+ * The controller for the program, it is a multiuse class for displaying database info, and adding
+ * info to the database.
+ *
+ * @author Padraig O'Brien
  */
 public class Controller {
 
   ObservableList<Product> productLine = FXCollections.observableArrayList();
-  ArrayList<ProductionRecord> productionLog = new ArrayList<ProductionRecord>();
-  ArrayList<ItemType> itemTypesCount = new ArrayList<ItemType>();
+  ArrayList<ProductionRecord> productionLog = new ArrayList<>();
+  ArrayList<ItemType> itemTypesCount = new ArrayList<>();
+  String reverse = "";
 
 
   @FXML
@@ -86,80 +84,216 @@ public class Controller {
   @FXML
   private TextArea productionRecord;
 
+  @FXML
+  private TextField employeeName;
 
   @FXML
-  public void addProduct() {
-    connectToDb();
-    productLineTable.getItems().clear();
+  private TextField employeePassword;
+
+  /**
+   * This method adds an employee to the database using the data obtained from the GUI, when the add
+   * Employee button is pressed.
+   */
+  @FXML
+  public void addEmployee() {
+    final String JdbcDriver = "org.h2.Driver";
+    final String DbUrl = "jdbc:h2:./res/PD";
+
+    //  Database credentials
+    final String user = "";
+    final String pass = getPassword();
+    Connection conn;
+    Statement stmt;
+
     try {
-      loadProductList();
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+      // STEP 1: Register JDBC driver
+      Class.forName(JdbcDriver);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DbUrl, user,
+          pass); // spot bugs flags this for no password, will receive password later
+
+      //STEP 3: Execute a query
+      stmt = conn.createStatement();
+      // spot bugs flags this however it is a false positive, statement is closed in step 4
+
+      // used the jdbc prepared statement tutorial off of tutorials.jenkov.com for section below
+      String addEmployee = "Insert INTO EMPLOYEES set name=? , username=? ,"
+          + " email=? , password=?";
+
+      if (employeeName.getText().length() == 0 || employeePassword.getText().length() == 0) {
+        System.out.println("\nPlease fill both fields and try again!");
+      } else {
+
+        PreparedStatement preparedStatement = conn.prepareStatement(addEmployee);
+        Employee newEmployee = new Employee(employeeName.getText(), employeePassword.getText());
+
+        preparedStatement.setString(1, employeeName.getText());
+        preparedStatement.setString(2, newEmployee.username); // used stack overflow
+        preparedStatement.setString(3, newEmployee.email);
+        preparedStatement.setString(4, newEmployee.password);
+        // adds new product into the database
+        preparedStatement.executeUpdate();
+
+        System.out.println("\nEmployee Added! Details provided below \n");
+        System.out.println(newEmployee.toString());
+
+        preparedStatement
+            .close(); //closed prepared statement because it could cause problems in the future
+      }
+      // STEP 4: Clean-up environment
+      stmt.close();
+      conn.close();
+
+
+    } catch (ClassNotFoundException | SQLException e) {
+      e.printStackTrace();
     }
-    System.out.println("Product Added!");
   }
 
+  /**
+   * This method add a product to the database using the data obtained from the GUI, when the add
+   * Product button is pressed.
+   */
   @FXML
-  public void recordProduction() throws SQLException {
-    Product pr = produceTabListView.getSelectionModel().getSelectedItem();
-    int quantityCount = Integer.parseInt(produceCmbQuantity.getSelectionModel().getSelectedItem());
-    System.out.println(pr);
-    System.out.println(quantityCount);
-    ArrayList<ProductionRecord> productionRun = new ArrayList<ProductionRecord>();
-    int itemCount = 0;
-    if (pr.getType() == ItemType.AUDIO) {
-      itemTypesCount.add(ItemType.AUDIO);
-    }
-    if (pr.getType() == ItemType.AUDIO_MOBILE) {
-      itemTypesCount.add(ItemType.AUDIO_MOBILE);
-    }
-    if (pr.getType() == ItemType.VISUAL) {
-      itemTypesCount.add(ItemType.VISUAL);
-    }
-    if (pr.getType() == ItemType.VISUAL_MOBILE) {
-      itemTypesCount.add(ItemType.VISUAL_MOBILE);
-    }
+  public void addProduct() {
+    final String JdbcDriver = "org.h2.Driver";
+    final String DbUrl = "jdbc:h2:./res/PD";
 
-    for (int i = 0; i < quantityCount; i++) {
-      itemCount = i;
-      for (int j = 0; j < itemTypesCount.size(); j++) {
-        if (pr.getType() == ItemType.AUDIO) {
-          if (itemTypesCount.get(j) == ItemType.AUDIO) {
-            itemCount++;
-          }
-        }
-        if (pr.getType() == ItemType.VISUAL) {
-          if (itemTypesCount.get(j) == ItemType.VISUAL) {
-            itemCount++;
-          }
-        }
-        if (pr.getType() == ItemType.AUDIO_MOBILE) {
-          if (itemTypesCount.get(j) == ItemType.AUDIO_MOBILE) {
-            itemCount++;
-          }
-        }
-        if (pr.getType() == ItemType.VISUAL_MOBILE) {
-          if (itemTypesCount.get(j) == ItemType.VISUAL_MOBILE) {
-            itemCount++;
-          }
+    //  Database credentials
+    final String user = "";
+    final String pass = getPassword();
+    Connection conn;
+    Statement stmt;
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JdbcDriver);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DbUrl, user,
+          pass); // spot bugs flags this for no password, will receive password later
+
+      //STEP 3: Execute a query
+      stmt = conn.createStatement();
+      // spot bugs flags this however it is a false positive, statement is closed in step 4
+
+      // used the jdbc prepared statement tutorial off of tutorials.jenkov.com for section below
+      String addProduct = "Insert INTO PRODUCT set name=? , type=? ,"
+          + " manufacturer=?";
+
+      PreparedStatement preparedStatement = conn.prepareStatement(addProduct);
+      if (columnOneProductName.getText().length() == 0
+          || columnOneProductManufacturer.getText().length() == 0) {
+        System.out.println("\nPlease fill out both fields and try again!");
+      } else {
+        preparedStatement.setString(1, columnOneProductName.getText());
+        preparedStatement.setString(2,
+            columnOneItemType.getSelectionModel().getSelectedItem()); // used stack overflow
+        preparedStatement.setString(3, columnOneProductManufacturer.getText());
+        // adds new product into the database
+        preparedStatement.executeUpdate();
+
+        String printDatabase = "SELECT * FROM PRODUCT";
+        ResultSet rs = stmt.executeQuery(printDatabase);
+
+        while (rs.next()) {
+          System.out.println(rs.getString(3) + " " + rs.getString(4)
+              + " " + rs.getString(
+              2));
+          // adjusted column order above so product would print in console type, manufacturer, name
         }
       }
-      ProductionRecord pr1 = new ProductionRecord(pr, itemCount);
-      productionRun.add(pr1);
-    }
+      // STEP 4: Clean-up environment
+      stmt.close();
+      conn.close();
+      preparedStatement
+          .close(); //closed prepared statement because it could cause problems in the future
 
-    addToProductionDB(productionRun);
-    System.out.println("Recording has Started!");
-    productionLog.clear();
-    loadProductionLog();
+    } catch (ClassNotFoundException | SQLException e) {
+      e.printStackTrace();
+    }
+    if (columnOneProductName.getText().length() == 0
+        || columnOneProductManufacturer.getText().length() == 0) {
+      System.out.println(" ");
+    } else {
+      productLineTable.getItems().clear();
+      try {
+        loadProductList();
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+      System.out.println("Product Added!");
+    }
+  }
+
+  /**
+   * This method creates a Production record for a Select Product from the GUI.
+   */
+  @FXML
+  public void recordProduction() throws SQLException {
+    if (produceTabListView.getSelectionModel().getSelectedItem() != null) {
+      Product pr = produceTabListView.getSelectionModel().getSelectedItem();
+      int quantityCount = Integer
+          .parseInt(produceCmbQuantity.getSelectionModel().getSelectedItem());
+      System.out.println(pr);
+      System.out.println(quantityCount);
+      ArrayList<ProductionRecord> productionRun = new ArrayList<>();
+      int itemCount;
+      if (pr.getType() == ItemType.AUDIO) {
+        itemTypesCount.add(ItemType.AUDIO);
+      }
+      if (pr.getType() == ItemType.AUDIO_MOBILE) {
+        itemTypesCount.add(ItemType.AUDIO_MOBILE);
+      }
+      if (pr.getType() == ItemType.VISUAL) {
+        itemTypesCount.add(ItemType.VISUAL);
+      }
+      if (pr.getType() == ItemType.VISUAL_MOBILE) {
+        itemTypesCount.add(ItemType.VISUAL_MOBILE);
+      }
+
+      for (int i = 0; i < quantityCount; i++) {
+        itemCount = i;
+        for (ItemType itemType : itemTypesCount) {
+          if (pr.getType() == ItemType.AUDIO) {
+            if (itemType == ItemType.AUDIO) {
+              itemCount++;
+            }
+          }
+          if (pr.getType() == ItemType.VISUAL) {
+            if (itemType == ItemType.VISUAL) {
+              itemCount++;
+            }
+          }
+          if (pr.getType() == ItemType.AUDIO_MOBILE) {
+            if (itemType == ItemType.AUDIO_MOBILE) {
+              itemCount++;
+            }
+          }
+          if (pr.getType() == ItemType.VISUAL_MOBILE) {
+            if (itemType == ItemType.VISUAL_MOBILE) {
+              itemCount++;
+            }
+          }
+        }
+        ProductionRecord pr1 = new ProductionRecord(pr, itemCount);
+        productionRun.add(pr1);
+      }
+
+      addToProductionDB(productionRun);
+      System.out.println("Recording has Started!");
+      productionLog.clear();
+      loadProductionLog();
+    } else {
+      System.out.println("\nPlease select the Product you would like to produce");
+    }
   }
 
 
   /**
-   * This method runs right away any time the application is run. It is currently being usd to
-   * populate the choice and combo box options in the UI
-   *
-   * @author Padraig O'Brien
+   * This method runs right away any time the application is run. The method populates the tables
+   * and text boxes with database info.
    */
   public void initialize() {
 
@@ -170,6 +304,8 @@ public class Controller {
     productLineTable.setItems(productLine);
 
     produceTabListView.setItems(productLine);
+
+    testMultimedia();
 
     try {
       loadProductList();
@@ -195,91 +331,32 @@ public class Controller {
     for (ItemType it : ItemType.values()) {
       columnOneItemType.getItems().add(it.code);
     }
-
+    columnOneItemType.getSelectionModel().selectFirst(); // makes default audio
 
   }
 
   /**
-   * This method is called when the add product button is hit. The purpose of this method is to
-   * connect to the database and add new products into the database. As well as, pull info from the
-   * database and print it into the console
-   *
-   * @author Padraig O'Brien
+   * This method loads the product line observable array list which will eventually be used to load
+   * the product line table.
    */
-  public void connectToDb() {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PD";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = "";
-    Connection conn;
-    Statement stmt;
-
-    try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER,
-          PASS); // spot bugs flags this for no password, will receive password later
-
-      //STEP 3: Execute a query
-      stmt = conn.createStatement();
-      // spot bugs flags this however it is a false positive, statement is closed in step 4
-
-      // used the jdbc prepared statement tutorial off of tutorials.jenkov.com for section below
-      String addProduct = "Insert INTO PRODUCT set name=? , type=? ,"
-          + " manufacturer=?";
-
-      PreparedStatement preparedStatement = conn.prepareStatement(addProduct);
-
-      preparedStatement.setString(1, columnOneProductName.getText());
-      preparedStatement.setString(2,
-          columnOneItemType.getSelectionModel().getSelectedItem()); // used stack overflow
-      preparedStatement.setString(3, columnOneProductManufacturer.getText());
-      // adds new product into the database
-      preparedStatement.executeUpdate();
-
-      String printDatabase = "SELECT * FROM PRODUCT";
-      ResultSet rs = stmt.executeQuery(printDatabase);
-
-      while (rs.next()) {
-        System.out.println(rs.getString(3) + " " + rs.getString(4)
-            + " " + rs.getString(
-            2));
-        // adjusted column order above so product would print in console type, manufacturer, name
-      }
-
-      // STEP 4: Clean-up environment
-      stmt.close();
-      conn.close();
-      preparedStatement
-          .close(); //closed prepared statement because it could cause problems in the future
-
-    } catch (ClassNotFoundException | SQLException e) {
-      e.printStackTrace();
-    }
-
-  }
-
   private void loadProductList() throws SQLException {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PD";
+    final String JdbcDriver = "org.h2.Driver";
+    final String DbUrl = "jdbc:h2:./res/PD";
 
     //  Database credentials
-    final String USER = "";
-    final String PASS = "";
+
+    final String user = "";
+    final String pass = getPassword();
     Connection conn;
     Statement stmt;
 
     try {
       // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
+      Class.forName(JdbcDriver);
 
       //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER,
-          PASS); // spot bugs flags this for no password, will receive password later
+      conn = DriverManager.getConnection(DbUrl, user,
+          pass); // spot bugs flags this for no password, will receive password later
 
       //STEP 3: Execute a query
       stmt = conn.createStatement();
@@ -327,6 +404,8 @@ public class Controller {
             System.out.println(product4);
             productLine.add(product4);
             break;
+          default:
+            break;
         }
 
         // save to observable list
@@ -340,23 +419,27 @@ public class Controller {
     }
   }
 
+  /**
+   * This method pulls production records from the database and adds them to the production log
+   * arraylist.
+   */
   private void loadProductionLog() throws SQLException {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PD";
+    final String JdbcDriver = "org.h2.Driver";
+    final String DbUrl = "jdbc:h2:./res/PD";
 
     //  Database credentials
-    final String USER = "";
-    final String PASS = "";
+    final String user = "";
+    final String pass = getPassword();
     Connection conn;
     Statement stmt;
 
     try {
       // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
+      Class.forName(JdbcDriver);
 
       //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER,
-          PASS); // spot bugs flags this for no password, will receive password later
+      conn = DriverManager.getConnection(DbUrl, user,
+          pass); // spot bugs flags this for no password, will receive password later
 
       //STEP 3: Execute a query
       stmt = conn.createStatement();
@@ -376,7 +459,7 @@ public class Controller {
 
         String serialNum = rs.getString(3);
 
-        Date dateProduced = rs.getDate(4);
+        Date dateProduced = rs.getTimestamp(4);
 
         ProductionRecord pr = new ProductionRecord(productionNum, prodID, serialNum, dateProduced);
         productionLog.add(pr);
@@ -394,6 +477,10 @@ public class Controller {
     }
   }
 
+  /**
+   * This method pulls production records from the database and adds them to the production log
+   * arraylist.
+   */
   public void showProduction(ArrayList<ProductionRecord> productionLog) {
     productionRecord.clear();
     for (ProductionRecord pr1 : productionLog) {
@@ -401,52 +488,134 @@ public class Controller {
     }
   }
 
+  /**
+   * This method uses the production run arraylist to populate the production record Database.
+   *
+   * @param productionRun An array list filled with Production records
+   */
   public void addToProductionDB(ArrayList<ProductionRecord> productionRun) {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PD";
+    final String JdbcDriver = "org.h2.Driver";
+    final String DbUrl = "jdbc:h2:./res/PD";
 
     //  Database credentials
-    final String USER = "";
-    final String PASS = "";
+    final String user = "";
+    final String pass = getPassword();
     Connection conn;
     Statement stmt;
 
     try {
       // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
+      Class.forName(JdbcDriver);
 
       //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER,
-          PASS); // spot bugs flags this for no password, will receive password later
+      conn = DriverManager.getConnection(DbUrl, user,
+          pass); // spot bugs flags this for no password, will receive password later
 
       //STEP 3: Execute a query
       stmt = conn.createStatement();
       // spot bugs flags this however it is a false positive, statement is closed in step 4
 
       // used the jdbc prepared statement tutorial off of tutorials.jenkov.com for section below
-      for (int i = 0; i < productionRun.size(); i++) {
+      for (ProductionRecord record : productionRun) {
         String addProductionRecord =
             "Insert INTO PRODUCTIONRECORD set product_id=? ,"
                 + " serial_num=? , date_produced=?";
 
         PreparedStatement preparedStatement = conn.prepareStatement(addProductionRecord);
 
-        int prodId = productionRun.get(i).getProductID();
+        int prodId = record.getProductID();
 
         preparedStatement.setString(1, String.valueOf(prodId)); // used stack overflow
-        preparedStatement.setString(2, productionRun.get(i).getSerialNum());
-        preparedStatement.setString(3,
-            String.valueOf(productionRun.get(i).getProdDate()));
+        preparedStatement.setString(2, record.getSerialNum());
+        preparedStatement.setTimestamp(3,
+            (Timestamp) record.getProdDate());
         // adds new product into the database
         preparedStatement.executeUpdate();
+
+        preparedStatement.close();
       }
 
       // STEP 4: Clean-up environment
       stmt.close();
       conn.close();
 
+
     } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();
+    }
+
+  }
+
+  /**
+   * This method retrieves the database password from the text file containing it.
+   */
+  public String getPassword() {
+    String password = "";
+    // used w3schools read java files page for code used below
+    try {
+      File myPassword = new File("src/main/resources/password.txt");
+      Scanner myReader = new Scanner(myPassword, "UTF-8");
+      while (myReader.hasNextLine()) {
+        password = myReader.nextLine();
+      }
+      myReader.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }
+    reverse = "";
+    return reverseString(password);
+  }
+
+
+  /**
+   * This method is used to reverse the text from the password text file for the database password.
+   */
+  public String reverseString(String pw) {
+    if ((pw == null) || (pw.length() <= 0)) {  // Recursion Reversing a String
+      return reverse;
+    } else {
+      reverse = reverse + pw.charAt(pw.length() - 1);
+      reverseString(pw.substring(0, pw.length() - 1));
+    }
+    return reverse;
+  }
+
+  /**
+   * This method is used to test the multimedia classes.
+   */
+  public static void testMultimedia() {
+
+    AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",
+
+        "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC",
+        "M3U/PLS/WPL");
+
+    Screen newScreen = new Screen("720x480", 40, 22);
+
+    MoviePlayer newMovieProduct = new MoviePlayer("DBPOWER MK101",
+        "OracleProduction", newScreen,
+
+        MonitorType.LCD);
+
+    ArrayList<MultimediaControl> productList = new ArrayList<>();
+
+    productList.add(newAudioProduct);
+
+    productList.add(newMovieProduct);
+
+    for (MultimediaControl p : productList) {
+
+      System.out.println(p);
+
+      p.play();
+
+      p.stop();
+
+      p.next();
+
+      p.previous();
+
     }
 
   }

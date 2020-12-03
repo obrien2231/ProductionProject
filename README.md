@@ -8,7 +8,7 @@ It is now finished in December in 2020, and I am much more proficient in Object 
 ## Demonstration
 
 ## Documentation
-[JavaDoc](https://obrien2231.github.io/ProductionProject/docs/index.html)
+[JavaDoc](https://obrien2231.github.io/ProductionProject/index.html)
 ## Diagrams
 Class diagram for the project <br>
  ![Class Diagram](classDiagram.png) <br>

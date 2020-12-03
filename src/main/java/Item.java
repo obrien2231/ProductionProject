@@ -1,13 +1,18 @@
+/**
+ * An Interface which is used when developing products.
+ *
+ * @author Padraig O'Brien
+ */
 public interface Item {
 
-  public int getId();
+  int getId();
 
-  public void setName(String name);
+  void setName(String name);
 
-  public String getName();
+  String getName();
 
-  public void setManufacturer(String manufacturer);
+  void setManufacturer(String manufacturer);
 
-  public String getManufacturer();
+  String getManufacturer();
 
 }

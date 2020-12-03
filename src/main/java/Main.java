@@ -20,14 +20,15 @@ public class Main extends Application {
 
   /**
    * Main method is the main entrypoint for the application.
-   *
-   * @author Padraig O'Brien
    */
   public static void main(String[] args) {
     launch(args);
 
   }
 
+  /**
+   * Start Method sets up our Graphical User Interface.
+   */
   @Override
   public void start(Stage primaryStage) throws Exception {
     Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));

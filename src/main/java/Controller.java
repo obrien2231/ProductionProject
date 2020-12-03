@@ -47,8 +47,8 @@ public class Controller {
 
   ObservableList<Product> productLine = FXCollections.observableArrayList();
   ArrayList<ProductionRecord> productionLog = new ArrayList<>();
-  ArrayList<ItemType> itemTypesCount = new ArrayList<>();
-  String reverse = "";
+  ArrayList<ItemType> itemTypesCount = new ArrayList<>(); // keeps track of itemtypes for serialnum
+  String reverse = ""; // string is created for password encryption used in reverse string method
 
 
   @FXML
@@ -120,7 +120,7 @@ public class Controller {
       // used the jdbc prepared statement tutorial off of tutorials.jenkov.com for section below
       String addEmployee = "Insert INTO EMPLOYEES set name=? , username=? ,"
           + " email=? , password=?";
-
+      // prevents error if a field is left blank
       if (employeeName.getText().length() == 0 || employeePassword.getText().length() == 0) {
         System.out.println("\nPlease fill both fields and try again!");
       } else {
@@ -213,6 +213,7 @@ public class Controller {
     } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();
     }
+    // prevents program from running items with empty fields
     if (columnOneProductName.getText().length() == 0
         || columnOneProductManufacturer.getText().length() == 0) {
       System.out.println(" ");
@@ -232,6 +233,7 @@ public class Controller {
    */
   @FXML
   public void recordProduction() throws SQLException {
+    // used to prevent null pointer exception, code help from stack overflow
     if (produceTabListView.getSelectionModel().getSelectedItem() != null) {
       Product pr = produceTabListView.getSelectionModel().getSelectedItem();
       int quantityCount = Integer
@@ -253,7 +255,7 @@ public class Controller {
         itemTypesCount.add(ItemType.VISUAL_MOBILE);
       }
 
-      for (int i = 0; i < quantityCount; i++) {
+      for (int i = 0; i < quantityCount; i++) { // item count loop is used for the serialnum
         itemCount = i;
         for (ItemType itemType : itemTypesCount) {
           if (pr.getType() == ItemType.AUDIO) {
@@ -305,7 +307,7 @@ public class Controller {
 
     produceTabListView.setItems(productLine);
 
-    testMultimedia();
+    testMultimedia(); // tests multimedia classes to check if working
 
     try {
       loadProductList();
@@ -462,7 +464,27 @@ public class Controller {
         Date dateProduced = rs.getTimestamp(4);
 
         ProductionRecord pr = new ProductionRecord(productionNum, prodID, serialNum, dateProduced);
+
         productionLog.add(pr);
+      }
+      itemTypesCount.clear();
+      for (ProductionRecord pr1 : productionLog) { // used to check for serial nums already in db
+        switch (pr1.getSerialNum().substring(3, 5)) {
+          case "AU":
+            itemTypesCount.add(ItemType.AUDIO);
+            break;
+          case "VI":
+            itemTypesCount.add(ItemType.VISUAL);
+            break;
+          case "AM":
+            itemTypesCount.add(ItemType.AUDIO_MOBILE);
+            break;
+          case "VM":
+            itemTypesCount.add(ItemType.VISUAL_MOBILE);
+            break;
+          default:
+            break;
+        }
       }
 
       showProduction(productionLog);
